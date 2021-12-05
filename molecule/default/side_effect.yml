@@ -1,0 +1,7 @@
+---
+- name: Side Effect
+  hosts: all
+  tasks:
+    - name: "Start Kibana"
+      shell: /usr/share/kibana/bin/kibana --allow-root >/dev/null 2>&1 &
+      when: ansible_virtualization_type == 'docker'

@@ -1,0 +1,17 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: true
+  tasks:
+  - name: Check Kibana web-server is running
+    uri:
+      url: "http://{{ ansible_facts['default_ipv4']['address'] }}:5601/"
+      status_code: [200, 503]
+    register: kibana_server_response
+    until: kibana_server_response is succeeded
+    retries: 5
+    delay: 10
+  - name: Check Kibana version
+    command: /usr/share/kibana/bin/kibana --allow-root --version
+    register: kibana_version_check
+    failed_when: kibana_version_check.stdout is not regex("^\d+\.\d+\.\d+$")
